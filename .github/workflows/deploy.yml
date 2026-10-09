@@ -1,0 +1,27 @@
+name: Deploy no kind
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build da imagem
+        run: docker build -t nginx-aula-11:1.0.0 ./app
+
+      - name: Carregar imagem no kind
+        run: kind load docker-image nginx-aula-11:1.0.0 --name aula-11
+
+      - name: Aplicar manifestos
+        run: kubectl apply -f manifestos/
+
+      - name: Reiniciar pods para pegar a imagem nova
+        run: kubectl rollout restart deployment/nginx-aula-11
+
+      - name: Aguardar deploy
+        run: kubectl rollout status deployment/nginx-aula-11 --timeout=120s
