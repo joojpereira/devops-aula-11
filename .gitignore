@@ -1,0 +1,12 @@
+@"
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+
+# Windows / editor
+.vscode/
+Thumbs.db
+"@ | Set-Content .gitignore
